@@ -1,0 +1,103 @@
+---
+- name: Configure Docker on Azure VM
+  hosts: azure_vm
+  become: true
+  vars:
+    docker_image: "khushi2111/flask_app:latest"
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: Update apt package index
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - python3-setuptools
+          - python3-distutils
+        state: present
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+        state: present
+
+    - name: Install Docker CE
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Install Docker SDK and required Python packages
+      pip:
+        name:
+          - docker
+          - packaging
+        executable: pip3
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Pull Docker image using shell 
+      shell: docker pull {{ docker_image }}
+      become: yes
+
+    - name: Stop existing container if running
+      shell: docker stop webapp || true
+      become: yes
+
+    - name: Remove existing container if exists
+      shell: docker rm webapp || true
+      become: yes
+
+    - name: Run web container
+      shell: |
+        docker run -d \
+          --name webapp \
+          -p 80:80 \
+          --restart always \
+          {{ docker_image }}
+      become: yes
+
+    - name: Verify container is running
+      shell: docker ps --filter "name=webapp"
+      register: container_status
+
+    - name: Display container status
+      debug:
+        msg: "Container status: {{ container_status.stdout }}"
+
+    - name: Wait for web service to be ready
+      uri:
+        url: "http://{{ ansible_default_ipv4.address }}:80"
+        method: GET
+        status_code: 200
+      register: webapp_response
+      until: webapp_response.status == 200
+      retries: 30
+      delay: 2
+      ignore_errors: yes
+
+    - name: Display web service status
+      debug:
+        msg: "Web service is {{ 'UP' if webapp_response.status == 200 else 'DOWN' }}"
+
+    - name: Show access information
+      debug:
+        msg: 
+          - "=== Deployment Complete ==="
+          - "Your Flask app is running at: http://{{ inventory_hostname }}:80"
+          - "Container ID: {{ container_status.stdout_lines[1].split()[0] if container_status.stdout_lines | length > 1 else 'Container not found' }}"
