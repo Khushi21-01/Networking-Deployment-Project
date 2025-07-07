@@ -13,7 +13,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-
       - name: Build & Push Docker image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/flask_app:latest .
