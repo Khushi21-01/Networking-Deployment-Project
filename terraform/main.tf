@@ -37,7 +37,7 @@ resource "azurerm_network_security_group" "ssh_nsg" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  security_rule "azurerm_network_security_group" "ssh_allow" {
+  security_rule "azurerm_network_security_group"  {
     name                       = "SSH"
     priority                   = 1001
     direction                  = "Inbound"
@@ -50,7 +50,7 @@ resource "azurerm_network_security_group" "ssh_nsg" {
   }
 
 
-  security_rule "azurerm_network_security_group" "http_allow" {
+  security_rule "azurerm_network_security_group"  {
     name                       = "HTTP"
     priority                   = 1002
     direction                  = "Inbound"
