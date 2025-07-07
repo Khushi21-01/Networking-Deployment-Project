@@ -9,11 +9,23 @@ This project demonstrates end-to-end automation of cloud infrastructure provisio
 -  GitHub Actions for CI/CD automation
 
 ---
-
-
-
-
-
+## Project Structure
+```
+azure-auto-deploy/
+├── terraform/                # Infrastructure setup using Terraform
+│   ├── main.tf
+│   └── outputs.tf
+├── sample-app/               # Flask app with Dockerfile
+│   ├── app.py
+│   ├── requirements.txt
+│   └── Dockerfile
+├── ansible/                  # Server with Ansible
+│   ├── inventory.ini
+│   └── run_container.yml
+├── .github/workflows/        # CI/CD configuration
+│   └── deploy.yml
+├── README.md
+```
 ---
 
 ##  Tools Used
@@ -44,15 +56,13 @@ This project demonstrates end-to-end automation of cloud infrastructure provisio
 
 ### 1. Clone the Repository
 
-```bash
-
 ```
-
+git clone 
+cd 
+````
 ---
 
 ### 2. Create Azure Infrastructure (Terraform)
-
-```bash
 cd terraform
 terraform init
 terraform apply
