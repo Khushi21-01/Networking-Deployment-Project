@@ -38,13 +38,7 @@
         name: docker-ce
         state: present
 
-    - name: Add user to Docker group
-      user:
-        name: azureuser
-        groups: docker
-        append: yes
-
-    - name: Install Docker SDK and Python dependencies
+    - name: Install Docker SDK and required Python packages
       pip:
         name:
           - docker
@@ -57,14 +51,17 @@
         state: started
         enabled: yes
 
-    - name: Pull Docker image
+    - name: Pull Docker image using shell 
       shell: docker pull {{ docker_image }}
+      become: yes
 
     - name: Stop existing container if running
       shell: docker stop webapp || true
+      become: yes
 
     - name: Remove existing container if exists
       shell: docker rm webapp || true
+      become: yes
 
     - name: Run web container
       shell: |
@@ -73,10 +70,7 @@
           -p 80:80 \
           --restart always \
           {{ docker_image }}
-
-    - name: Wait a few seconds before checking container
-      pause:
-        seconds: 5
+      become: yes
 
     - name: Verify container is running
       shell: docker ps --filter "name=webapp"
@@ -99,19 +93,11 @@
 
     - name: Display web service status
       debug:
-        msg: >-
-          Web service is {{
-            'UP' if webapp_response is defined and webapp_response.status == 200 else 'DOWN'
-          }}
+        msg: "Web service is {{ 'UP' if webapp_response.status == 200 else 'DOWN' }}"
 
     - name: Show access information
       debug:
-        msg:
+        msg: 
           - "=== Deployment Complete ==="
           - "Your Flask app is running at: http://{{ inventory_hostname }}:80"
-          - >-
-            Container ID: {{
-              container_status.stdout_lines[1].split()[0]
-              if container_status.stdout_lines is defined and container_status.stdout_lines | length > 1
-              else 'Container not found'
-            }}"
+          - "Container ID: {{ container_status.stdout_lines[1].split()[0] if container_status.stdout_lines | length > 1 else 'Container not found' }}"
