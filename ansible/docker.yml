@@ -1,7 +1,7 @@
 ---
-- name: Configure Docker and deploy Flask app on Azure VM
+- name: Configure Docker on Azure VM
   hosts: azure_vm
-  become: yes
+  become: true
   vars:
     docker_image: "khushi2111/flask_app:latest"
     ansible_python_interpreter: /usr/bin/python3
@@ -11,7 +11,7 @@
       apt:
         update_cache: yes
 
-    - name: Install prerequisite packages
+    - name: Install required packages
       apt:
         name:
           - apt-transport-https
@@ -20,6 +20,7 @@
           - software-properties-common
           - python3-pip
           - python3-setuptools
+          - python3-distutils
         state: present
 
     - name: Add Docker GPG key
@@ -34,63 +35,69 @@
 
     - name: Install Docker CE
       apt:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
+        name: docker-ce
         state: present
 
-    - name: Install Docker SDK for Python
+    - name: Install Docker SDK and required Python packages
       pip:
         name:
           - docker
           - packaging
         executable: pip3
 
-    - name: Ensure Docker service is running
+    - name: Start and enable Docker service
       systemd:
         name: docker
         state: started
         enabled: yes
 
-    - name: Pull Docker image
-      docker_image:
-        name: "{{ docker_image }}"
-        source: pull
+    - name: Pull Docker image using shell 
+      shell: docker pull {{ docker_image }}
+      become: yes
 
-    - name: Stop and remove existing container
-      docker_container:
-        name: webapp
-        state: absent
+    - name: Stop existing container if running
+      shell: docker stop webapp || true
+      become: yes
 
-    - name: Deploy Flask container
-      docker_container:
-        name: webapp
-        image: "{{ docker_image }}"
-        ports:
-          - "80:80"
-        restart_policy: always
-        state: started
+    - name: Remove existing container if exists
+      shell: docker rm webapp || true
+      become: yes
 
-    - name: Verify container status
-      docker_container_info:
-        name: webapp
-      register: container_info
+    - name: Run web container
+      shell: |
+        docker run -d \
+          --name webapp \
+          -p 80:80 \
+          --restart always \
+          {{ docker_image }}
+      become: yes
 
-    - name: Check web service availability
+    - name: Verify container is running
+      shell: docker ps --filter "name=webapp"
+      register: container_status
+
+    - name: Display container status
+      debug:
+        msg: "Container status: {{ container_status.stdout }}"
+
+    - name: Wait for web service to be ready
       uri:
         url: "http://localhost:80"
         method: GET
         status_code: 200
       register: webapp_response
       until: webapp_response.status == 200
-      retries: 5
+      retries: 30
       delay: 2
+      ignore_errors: yes
 
-    - name: Display deployment information
+    - name: Display web service status
       debug:
-        msg:
+        msg: "Web service is {{ 'UP' if webapp_response.status == 200 else 'DOWN' }}"
+
+    - name: Show access information
+      debug:
+        msg: 
           - "=== Deployment Complete ==="
-          - "Access your Flask app at: http://{{ ansible_host }}:80"
-          - "Container ID: {{ container_info.container.Id }}"
-          - "Container Status: {{ container_info.container.State.Status }}"
+          - "Your Flask app is running at: http://{{ inventory_hostname }}:80"
+          - "Container ID: {{ container_status.stdout_lines[1].split()[0] if container_status.stdout_lines | length > 1 else 'Container not found' }}"
