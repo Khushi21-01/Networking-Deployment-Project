@@ -13,22 +13,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.6.6
-
-      - name: Terraform Init & Apply
-        run: |
-          terraform init
-          terraform apply -auto-approve
-        working-directory: terraform/
-
-      - name: Get public IP
-        id: get_ip
-        run: |
-          echo "IP=$(terraform output -raw public_ip)" >> "$GITHUB_OUTPUT"
-        working-directory: terraform/
 
       - name: Build & Push Docker image
         run: |
