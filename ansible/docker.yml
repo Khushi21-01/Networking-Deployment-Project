@@ -87,7 +87,7 @@
         status_code: 200
       register: webapp_response
       until: webapp_response.status == 200
-      retries: 30
+      retries: 5
       delay: 2
       ignore_errors: yes
 
