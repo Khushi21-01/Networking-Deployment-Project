@@ -5,6 +5,14 @@
   vars:
     docker_image: "khushi2111/flask_app:latest"
     ansible_python_interpreter: /usr/bin/python3
+    
+- hosts: azure_vm  
+  become: yes
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
 
   tasks:
     - name: Update apt package index
