@@ -13,11 +13,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build & Push Docker image
-        run: |
-          docker build -t ${{ secrets.khushi2111 }}/flask_app:latest .
-          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.khushi2111 }} --password-stdin
-          docker push ${{ secrets.khushi2111 }}/flask_app:latest
 
       - name: Install Ansible
         run: |
