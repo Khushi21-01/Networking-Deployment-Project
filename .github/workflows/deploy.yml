@@ -36,6 +36,35 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+      
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+      
+      - name: Azure Login with Retry
+        run: |
+          for i in {1..3}; do
+            echo "Login attempt $i"
+            if az login -u ${{ secrets.AZURE_USERNAME }} -p ${{ secrets.AZURE_PASSWORD }}; then
+              echo "Login successful"
+              break
+            else
+              echo "Login failed, retrying..."
+              sleep 10
+            fi
+          done
+          
+          # Set subscription
+          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          
+          # Verify
+          echo "Current account:"
+          az account show
       
       
       - name: Setup Ansible
