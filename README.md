@@ -123,5 +123,5 @@ http://74.235.0.167/
 
 ```
 ### 7. Output Screenshot
-[sample App](./sample-application/Screenshot (95).png)
+![sample App](./sample-application/Screenshot (95).png)
 
