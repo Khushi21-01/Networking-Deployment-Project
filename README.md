@@ -21,7 +21,7 @@ azure-auto-deploy/
 │   └── Dockerfile
 ├── ansible/                  # Server with Ansible
 │   ├── inventory.ini
-│   └── run_container.yml
+│   └── docker.yml
 ├── .github/workflows/        # CI/CD configuration
 │   └── deploy.yml
 ├── README.md
@@ -59,23 +59,22 @@ azure-auto-deploy/
 ```
 git clone 
 cd 
-````
----
+```
+
 
 ### 2. Create Azure Infrastructure (Terraform)
 cd terraform
 terraform init
 terraform apply
-```
+
 
 > This creates the Azure VM and prints the public IP address.
 
----
 
 ### 3. Prepare Flask App and Dockerfile
 
 - `app.py` is a basic Flask application
-- `Dockerfile` builds a container using Python 3.9
+- `Dockerfile` builds a container using Python
 - `requirements.txt` installs Flask
 
 ---
@@ -118,7 +117,8 @@ GitHub Actions will:
 Visit  public VM IP:
 
 ```
-http://<azure-vm-ip>
+http://74.235.0.167/
+
 ```
 
 
