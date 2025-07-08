@@ -63,9 +63,11 @@ cd
 
 
 ### 2. Create Azure Infrastructure (Terraform)
+```
 cd terraform
 terraform init
 terraform apply
+```
 
 
 > This creates the Azure VM and prints the public IP address.
@@ -81,7 +83,7 @@ terraform apply
 
 ### 4. Configure Ansible
 
-Edit `ansible/inventory.ini` with your Azure VM IP:
+Edit `ansible/inventory.ini` with Azure VM IP:
 
 ```ini
 [azure_vm]
@@ -120,9 +122,6 @@ Visit  public VM IP:
 http://74.235.0.167/
 
 ```
-
-
-
-
-
+### 7. Output Screenshot
+![sample App](D:\Networking Project\Networking Deployment Project\sample-application\Screenshot (95).png)
 
