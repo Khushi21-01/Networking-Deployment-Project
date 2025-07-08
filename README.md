@@ -123,5 +123,5 @@ http://74.235.0.167/
 
 ```
 ### 7. Output Screenshot
-![sample App](D:\Networking Project\Networking Deployment Project\sample-application\Screenshot (95).png)
+![sample App](D:/Networking Project/Networking Deployment Project/sample-application/Screenshot (95).png)
 
