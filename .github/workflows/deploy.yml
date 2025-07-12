@@ -2,7 +2,7 @@ name: Azure Deployment Pipeline
 
 on: 
   push:
-    branches: [ master, develop ]
+    branches: [ main ]
   workflow_dispatch:
     inputs:
       deploy_infrastructure:
