@@ -5,8 +5,9 @@
   vars:
     #docker_image: "khushi2111/flask_app:latest"
       
-    docker_image: "{{ docker_image }}"
-    ansible_python_interpreter: /usr/bin/python3
+     docker_image: "{{ docker_image | default('khushi2111/flask_app:latest') }}"
+
+     ansible_python_interpreter: /usr/bin/python3
 
   tasks:
     - name: Update apt package index

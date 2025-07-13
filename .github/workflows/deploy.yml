@@ -58,7 +58,8 @@ jobs:
 
       - name: Run Ansible Playbook 
         run: |
-          ansible-playbook -i inventory.ini ansible/docker.yml
+          ansible-playbook -i inventory.ini ansible/docker.yml -e "docker_image=khushi2111/flask_app:latest"
+
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
 
