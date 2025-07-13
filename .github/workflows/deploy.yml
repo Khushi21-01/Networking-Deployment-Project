@@ -1,9 +1,9 @@
-name: CI/CD: Build and Deploy
+name: CI/CD Build and Deploy
 
 on:
   push:
     branches:
-      - main
+      [main]
 
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/webapp:latest
