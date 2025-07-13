@@ -3,7 +3,9 @@
   hosts: azure_vm
   become: true
   vars:
-    docker_image: "khushi2111/flask_app:latest"
+    #docker_image: "khushi2111/flask_app:latest"
+      
+    docker_image: "{{ docker_image }}"
     ansible_python_interpreter: /usr/bin/python3
 
   tasks:
@@ -51,9 +53,22 @@
         state: started
         enabled: yes
 
-    - name: Pull Docker image using shell 
-      shell: docker pull {{ docker_image }}
+
+
+    - name: Force pull latest Docker image
+      shell: docker pull --quiet {{ docker_image }}
       become: yes
+
+    - name: Show image digest
+      shell: docker inspect --format='{{.RepoDigests}}' {{ docker_image }}
+      register: image_digest
+      become: yes
+
+    - name: Print image digest
+      debug:
+        msg: "Image digest: {{ image_digest.stdout }}"
+
+
 
     - name: Stop existing container if running
       shell: docker stop webapp || true
