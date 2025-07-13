@@ -53,8 +53,8 @@ jobs:
 
       - name: Generate dynamic inventory
         run: |
-        echo "[azure_vm]" > inventory.ini
-        echo "${{ secrets.HOST }} ansible_user=azureuser ansible_ssh_private_key_file=~/.ssh/id_rsa ansible_python_interpreter=/usr/bin/python3" >> inventory.ini
+         echo "[azure_vm]" > inventory.ini
+         echo "${{ secrets.HOST }} ansible_user=azureuser ansible_ssh_private_key_file=~/.ssh/id_rsa ansible_python_interpreter=/usr/bin/python3" >> inventory.ini
 
 
 
