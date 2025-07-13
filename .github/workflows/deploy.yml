@@ -56,8 +56,11 @@ jobs:
          echo "[azure_vm]" > inventory.ini
          echo "${{ secrets.HOST }} ansible_user=azureuser ansible_ssh_private_key_file=~/.ssh/id_rsa ansible_python_interpreter=/usr/bin/python3" >> inventory.ini
 
-
-
+      - name: Run Ansible Playbook 
+        run: |
+          ansible-playbook -i inventory.ini ansible/docker.yml
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
 
       - name: Run Ansible Playbook
         run: |
