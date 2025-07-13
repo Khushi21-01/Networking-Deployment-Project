@@ -61,9 +61,10 @@
       become: yes
 
     - name: Show image digest
-      shell: docker inspect --format='{{.RepoDigests}}' {{ docker_image }}
+      shell: docker inspect --format='{% raw %}{{.RepoDigests}}{% endraw %}' {{ docker_image }}
       register: image_digest
       become: yes
+
 
     - name: Print image digest
       debug:
