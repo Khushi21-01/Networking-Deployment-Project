@@ -62,13 +62,13 @@ jobs:
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
 
-      - name: Run Ansible Playbook
-        run: |
-          ansible-playbook \
-            -i "${PUBLIC_IP}," \
-            -u azureuser \
-            --private-key ~/.ssh/id_rsa \
-            -e "docker_image=${DOCKER_IMAGE}" \
-            ansible/docker.yml
-        env:
-          ANSIBLE_HOST_KEY_CHECKING: "False"
+     # - name: Run Ansible Playbook
+      #  run: |
+       #   ansible-playbook \
+        #    -i "${PUBLIC_IP}," \
+         #   -u azureuser \
+          #  --private-key ~/.ssh/id_rsa \
+           # -e "docker_image=${DOCKER_IMAGE}" \
+            #ansible/docker.yml
+    #    env:
+     #     ANSIBLE_HOST_KEY_CHECKING: "False"
