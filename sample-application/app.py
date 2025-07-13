@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    message = "Hello! This is our Network and System Administration Project. Welcome to our full Flask web application — now running with Docker, Ansible, and Terraform on Azure!"
+    message = "Hello! This is our Network and System Administration Project. Welcome to our full Flask web application — now running with Docker, Ansible, and Terraform on Azure!, This is my updated app deploy."
     return Response(message, mimetype='text/plain')
 
 if __name__ == "__main__":
