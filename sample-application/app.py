@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    message = "Hello! This is our Network and System Administration Project."
+    message = "Hello! This is live"
     return Response(message, mimetype='text/plain')
 
 if __name__ == "__main__":
